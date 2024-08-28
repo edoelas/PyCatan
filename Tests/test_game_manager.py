@@ -153,7 +153,7 @@ class TestGameManager:
         # No tenemos materiales suficientes así que no hará nada
         assert self.game_manager.build_road(0, 0, 1)['response'] is False
 
-        self.game_manager.agent_manager.players[0]['resources'].add_material([MaterialConstants.CLAY,
+        self.game_manager.agent_manager.players[0]['resources'].update_material_list([MaterialConstants.CLAY,
                                                                               MaterialConstants.WOOD
                                                                               ], 1)
         # No tenemos poblado así que no hará nada
@@ -170,7 +170,7 @@ class TestGameManager:
         # No tenemos materiales suficientes así que no hará nada
         assert self.game_manager.build_town(0, 0)['response'] is False
 
-        self.game_manager.agent_manager.players[0]['resources'].add_material([MaterialConstants.CEREAL,
+        self.game_manager.agent_manager.players[0]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                               MaterialConstants.CLAY,
                                                                               MaterialConstants.WOOD,
                                                                               MaterialConstants.WOOL
@@ -189,7 +189,7 @@ class TestGameManager:
         # No tenemos materiales suficientes así que no hará nada
         assert self.game_manager.build_city(0, 0)['response'] is False
 
-        self.game_manager.agent_manager.players[0]['resources'].add_material([MaterialConstants.CEREAL,
+        self.game_manager.agent_manager.players[0]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                               MaterialConstants.MINERAL
                                                                               ], 3)
         # No tenemos poblado así que no hará nada
@@ -206,7 +206,7 @@ class TestGameManager:
         # No tenemos materiales suficientes así que no hará nada
         assert self.game_manager.build_development_card(0)['response'] is False
 
-        self.game_manager.agent_manager.players[0]['resources'].add_material([MaterialConstants.CEREAL,
+        self.game_manager.agent_manager.players[0]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                               MaterialConstants.MINERAL,
                                                                               MaterialConstants.WOOL
                                                                               ], 1)
@@ -224,7 +224,7 @@ class TestGameManager:
         self.game_manager.board.nodes[0]['player'] = 0
         self.game_manager.board.nodes[32]['player'] = 3
 
-        self.game_manager.agent_manager.players[3]['resources'].add_material([MaterialConstants.CEREAL,
+        self.game_manager.agent_manager.players[3]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                               MaterialConstants.MINERAL,
                                                                               MaterialConstants.WOOL
                                                                               ], 1)
@@ -321,14 +321,14 @@ class TestGameManager:
             self.game_manager.board.nodes[42]['player'] = 2
             self.game_manager.board.nodes[0]['player'] = 3
             for player in range(3):
-                self.game_manager.agent_manager.players[player]['resources'].add_material([MaterialConstants.CEREAL,
+                self.game_manager.agent_manager.players[player]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                                            MaterialConstants.MINERAL,
                                                                                            MaterialConstants.CLAY,
                                                                                            MaterialConstants.WOOL,
                                                                                            MaterialConstants.WOOD
                                                                                            ], 1)
 
-            self.game_manager.agent_manager.players[3]['resources'].add_material([MaterialConstants.CEREAL,
+            self.game_manager.agent_manager.players[3]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                                   MaterialConstants.MINERAL,
                                                                                   MaterialConstants.WOOL,
                                                                                   ], 1)
@@ -413,13 +413,13 @@ class TestGameManager:
                 self.game_manager.agent_manager.players)[player]['resources']
 
         for player in range(4):
-            self.game_manager.agent_manager.players[player]['resources'].add_material([MaterialConstants.CEREAL,
+            self.game_manager.agent_manager.players[player]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                                        MaterialConstants.MINERAL,
                                                                                        MaterialConstants.CLAY,
                                                                                        MaterialConstants.WOOL,
                                                                                        MaterialConstants.WOOD
                                                                                        ], player)
-            self.game_manager.agent_manager.players[0]['resources'].add_material(MaterialConstants.CEREAL, 1)
+            self.game_manager.agent_manager.players[0]['resources'].update_material(MaterialConstants.CEREAL, 1)
 
             self.game_manager.agent_manager.players[player]['player'].hand = (
                 self.game_manager.agent_manager.players)[player]['resources']

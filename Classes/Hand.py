@@ -1,5 +1,6 @@
 from Classes.Materials import Materials
 
+from typing import List
 
 class Hand:
     """
@@ -8,47 +9,41 @@ class Hand:
 
     def __init__(self):
         self.resources = Materials(0,0,0,0,0)
-        return
 
-    def add_material(self, resource, amount):
+    def set_material(self, new_resources: Materials):
         """
-        Suma amount al material seleccionado (si es negativo lo resta de la cantidad actual).
-        Si se le pasa una lista se convierte en una función recusiva de sí misma.
-        :param resource: (int o list) tipo de recurso a añadir.
-        :param amount: (int) cantidad del recurso a añadir.
+        Establece los materiales de la mano a los que se le pasan.
+        :param new_resources: (Materials) materiales a establecer.
         :return: None
         """
-        if isinstance(resource, list):
-            for material in resource:
-                self.add_material(material, amount)
-
-        else:
-            self.resources = self.resources.add_from_id(resource, amount)
-
-        return
-
-    def remove_material(self, resource, amount):
+        self.resources = new_resources
+    
+    def update_material(self, resource_id, amount):
         """
-        Resta amount al material seleccionado (si es negativo lo suma de la cantidad actual).
-        Si se le pasa una lista se convierte en una función recusiva de sí misma.
-        :param resource: (int o list) tipo de recurso a quitar.
-        :param amount: (int)cantidad del recurso a quitar.
+        Suma amount al material seleccionado (si es negativo resta).
+        :param resource: (int) tipo de recurso a actualizar.
+        :param amount: (int) cantidad del recurso a actualizar.
         :return: None
         """
-        if isinstance(resource, list):
-            for material in resource:
-                self.remove_material(material, amount)
-        else:
-            if self.get_from_id(resource) >= amount:
-                self.add_material(resource, (amount * -1))
-        return
+        if self.resources.get_from_id(resource_id) + amount < 0:
+            return
+        self.resources = self.resources.add_from_id(resource_id, amount)
+    
+    def update_material_list(self, resource_ids, amount):
+        """
+        Suma amount a los materiales seleccionados (si es negativo resta).
+        :param resource: (list) tipo de recursos a actualizar.
+        :param amount: (int) cantidad del recurso a actualizar.
+        :return: None
+        """
+        for resource in resource_ids:
+            self.update_material(resource, amount)
 
     def get_from_id(self, material_id):
         return self.resources.get_from_id(material_id)
 
     def get_total(self):
-        return (self.resources.cereal + self.resources.mineral + self.resources.clay
-                + self.resources.wood + self.resources.wool)
+        return sum(self.resources)
 
     def __str__(self):
-        return 'Hand(' + str(self.resources) + ')'
+        return f'Hand: {str(self.resources)}' 

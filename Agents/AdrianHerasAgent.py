@@ -48,17 +48,17 @@ class AdrianHerasAgent(AgentInterface):
         if self.hand.resources.has_this_more_materials(BuildConstants.CITY):
             while self.hand.get_total() > 7:
                 if self.hand.resources.wool > 0:
-                    self.hand.remove_material(4, 1)
+                    self.hand.update_material(4, -1)
 
                 if self.hand.resources.cereal > 2:
-                    self.hand.remove_material(0, 1)
+                    self.hand.update_material(0, -1)
                 if self.hand.resources.mineral > 3:
-                    self.hand.remove_material(1, 1)
+                    self.hand.update_material(1, -1)
 
                 if self.hand.resources.clay > 0:
-                    self.hand.remove_material(2, 1)
+                    self.hand.update_material(2, -1)
                 if self.hand.resources.wood > 0:
-                    self.hand.remove_material(3, 1)
+                    self.hand.update_material(3, -1)
         # Si no tiene materiales para hacer una ciudad descarta de manera aleatoria cartas de su mano
         return self.hand
 
@@ -139,7 +139,7 @@ class AdrianHerasAgent(AgentInterface):
                     # una vez mezclado se recorre el orden de los materiales y se coge el primero que tenga un valor
                     for mat in order:
                         if self.hand.resources.get_from_id(mat) > 0:
-                            self.hand.remove_material(mat, 1)
+                            self.hand.update_material(mat, -1)
                             materials_to_give[mat] += 1
                             break
                 gives = Materials(materials_to_give[0], materials_to_give[1], materials_to_give[2],
@@ -187,7 +187,7 @@ class AdrianHerasAgent(AgentInterface):
                     # una vez mezclado se recorre el orden de los materiales y se coge el primero que tenga un valor
                     for mat in order:
                         if self.hand.resources.get_from_id(mat) > 1 or mat == MaterialConstants.MINERAL:
-                            self.hand.remove_material(mat, 1)
+                            self.hand.update_material(mat, -1)
                             materials_to_give[mat] += 1
                             break
 

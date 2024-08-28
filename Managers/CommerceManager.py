@@ -18,8 +18,8 @@ class CommerceManager:
         :return: bool
         """
         if player_hand.get_from_id(gives) >= 4:
-            player_hand.remove_material(gives, 4)
-            player_hand.add_material(receives, 1)
+            player_hand.update_material(gives, -4)
+            player_hand.update_material(receives, 1)
             return player_hand
         else:
             return False
@@ -33,8 +33,8 @@ class CommerceManager:
         :return: bool
         """
         if player_hand.get_from_id(gives) >= 3:
-            player_hand.remove_material(gives, 3)
-            player_hand.add_material(receives, 1)
+            player_hand.update_material(gives, -3)
+            player_hand.update_material(receives, 1)
             return player_hand
         else:
             return False
@@ -48,8 +48,8 @@ class CommerceManager:
         :return: bool
         """
         if player_hand.get_from_id(gives) >= 2:
-            player_hand.remove_material(gives, 2)
-            player_hand.add_material(receives, 1)
+            player_hand.update_material(gives, -2)
+            player_hand.update_material(receives, 1)
             return player_hand
         else:
             return False

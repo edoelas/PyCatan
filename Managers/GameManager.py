@@ -76,11 +76,11 @@ class GameManager:
                         # Si tiene ciudad se dan 2 en lugar de 1 material
 
                         if self.board.nodes[node]['has_city']:
-                            player['player'].hand.add_material(terrain['terrain_type'], 2)
-                            player['resources'].add_material(terrain['terrain_type'], 2)
+                            player['player'].hand.update_material(terrain['terrain_type'], 2)
+                            player['resources'].update_material(terrain['terrain_type'], 2)
                         else:
-                            player['player'].hand.add_material(terrain['terrain_type'], 1)
-                            player['resources'].add_material(terrain['terrain_type'], 1)
+                            player['player'].hand.update_material(terrain['terrain_type'], 1)
+                            player['resources'].update_material(terrain['terrain_type'], 1)
         return
 
     def _give_all_resources(self):
@@ -89,11 +89,11 @@ class GameManager:
         :return: None
         """
         for player in self.agent_manager.players:
-            player['resources'].add_material(MaterialConstants.CEREAL, 5)
-            player['resources'].add_material(MaterialConstants.MINERAL, 5)
-            player['resources'].add_material(MaterialConstants.CLAY, 5)
-            player['resources'].add_material(MaterialConstants.WOOD, 5)
-            player['resources'].add_material(MaterialConstants.WOOL, 5)
+            player['resources'].update_material(MaterialConstants.CEREAL, 5)
+            player['resources'].update_material(MaterialConstants.MINERAL, 5)
+            player['resources'].update_material(MaterialConstants.CLAY, 5)
+            player['resources'].update_material(MaterialConstants.WOOD, 5)
+            player['resources'].update_material(MaterialConstants.WOOL, 5)
             player['player'].hand = player['resources']
 
         return
@@ -196,12 +196,12 @@ class GameManager:
 
             for i in range(len(materials)):
                 material_quantity = getattr(trade_offer.gives, materials[i])
-                giver['resources'].remove_material(i, material_quantity)  # Se resta lo que giver entrega
-                receiver['resources'].add_material(i, material_quantity)  # Se añade lo que receiver recibe del giver
+                giver['resources'].update_material(i, -material_quantity)  # Se resta lo que giver entrega
+                receiver['resources'].update_material(i, material_quantity)  # Se añade lo que receiver recibe del giver
 
                 material_quantity = getattr(trade_offer.receives, materials[i])
-                receiver['resources'].remove_material(i, material_quantity)  # Se resta lo que receiver entrega
-                giver['resources'].add_material(i, material_quantity)  # Se añade lo que giver recibe del receiver
+                receiver['resources'].update_material(i, -material_quantity)  # Se resta lo que receiver entrega
+                giver['resources'].update_material(i, material_quantity)  # Se añade lo que giver recibe del receiver
 
             giver['player'].hand = giver['resources']
             receiver['player'].hand = receiver['resources']
@@ -222,11 +222,11 @@ class GameManager:
             build_town_obj = self.board.build_town(player_id, node)
 
             if build_town_obj['response']:
-                self.agent_manager.players[player_id]['resources'].remove_material([MaterialConstants.CEREAL,
+                self.agent_manager.players[player_id]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                                     MaterialConstants.CLAY,
                                                                                     MaterialConstants.WOOD,
                                                                                     MaterialConstants.WOOL
-                                                                                    ], 1)
+                                                                                    ], -1)
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
 
             return build_town_obj
@@ -244,8 +244,8 @@ class GameManager:
             build_city_obj = self.board.build_city(player_id, node)
 
             if build_city_obj['response']:
-                self.agent_manager.players[player_id]['resources'].remove_material(MaterialConstants.CEREAL, 2)
-                self.agent_manager.players[player_id]['resources'].remove_material(MaterialConstants.MINERAL, 3)
+                self.agent_manager.players[player_id]['resources'].update_material(MaterialConstants.CEREAL, -2)
+                self.agent_manager.players[player_id]['resources'].update_material(MaterialConstants.MINERAL, -3)
 
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
 
@@ -266,9 +266,9 @@ class GameManager:
             build_road_obj = self.board.build_road(player_id, node, road)
 
             if build_road_obj['response'] and not free:
-                self.agent_manager.players[player_id]['resources'].remove_material([MaterialConstants.CLAY,
+                self.agent_manager.players[player_id]['resources'].update_material_list([MaterialConstants.CLAY,
                                                                                     MaterialConstants.WOOD
-                                                                                    ], 1)
+                                                                                    ], -1)
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
 
             return build_road_obj
@@ -287,10 +287,10 @@ class GameManager:
         if card_drawn is not None:
 
             if self.agent_manager.players[player_id]['resources'].resources.has_this_more_materials('card'):
-                self.agent_manager.players[player_id]['resources'].remove_material([MaterialConstants.CEREAL,
+                self.agent_manager.players[player_id]['resources'].update_material_list([MaterialConstants.CEREAL,
                                                                                     MaterialConstants.MINERAL,
                                                                                     MaterialConstants.WOOL
-                                                                                    ], 1)
+                                                                                    ], -1)
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
 
                 if card_drawn.type == DevelopmentCardConstants.VICTORY_POINT:
@@ -344,10 +344,10 @@ class GameManager:
 
         while new_total == total and total != 0:
             material_id = random.randint(0, 4)
-            player_obj['resources'].remove_material(material_id, 1)
+            player_obj['resources'].update_material(material_id, -1)
             new_total = player_obj['resources'].get_total()
 
-        actual_player_obj['resources'].add_material(material_id, 1)
+        actual_player_obj['resources'].update_material(material_id, 1)
 
         player_obj['player'].hand = player_obj['resources']
         actual_player_obj['player'].hand = actual_player_obj['resources']
@@ -381,7 +381,7 @@ class GameManager:
                 self.board.nodes[node_id]['player'] = player
 
                 # Se le dan materiales al AgentManager y este a los agentes para que sepan cuantos tienen en realidad
-                self.agent_manager.players[player]['resources'].add_material(materials, 1)
+                self.agent_manager.players[player]['resources'].update_material_list(materials, 1)
                 self.agent_manager.players[player]['player'].hand = self.agent_manager.players[player]['resources']
 
                 self.agent_manager.players[player]['victory_points'] += 1
@@ -509,12 +509,12 @@ class GameManager:
                 # Se elimina el material de la mano de todos los jugadores
                 for player in self.agent_manager.players:
                     material_sum += player['resources'].get_from_id(material_chosen)
-                    player['resources'].remove_material(material_chosen,
-                                                        player['resources'].get_from_id(material_chosen))
+                    player['resources'].update_material(material_chosen,
+                                                        -player['resources'].get_from_id(material_chosen))
                     player['player'].hand = player['resources']
 
                 # Se le dan todos los materiales eliminados al que usó la carta
-                self.agent_manager.players[player_id]['resources'].add_material(material_chosen, material_sum)
+                self.agent_manager.players[player_id]['resources'].update_material(material_chosen, material_sum)
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
 
                 # Se añade al objeto el material, la suma, y las nuevas manos tras la resta de materiales
@@ -607,8 +607,8 @@ class GameManager:
                     materials_selected = {'material': material, 'material_2': material2}
 
                 # Obtienen una carta de ese material elegido
-                self.agent_manager.players[player_id]['resources'].add_material(materials_selected['material'], 1)
-                self.agent_manager.players[player_id]['resources'].add_material(materials_selected['material_2'], 1)
+                self.agent_manager.players[player_id]['resources'].update_material(materials_selected['material'], 1)
+                self.agent_manager.players[player_id]['resources'].update_material(materials_selected['material_2'], 1)
 
                 # Se actualiza la mano
                 self.agent_manager.players[player_id]['player'].hand = self.agent_manager.players[player_id]['resources']
@@ -794,7 +794,7 @@ class GameManager:
                     max_hand = math.floor(total / 2)
 
                     while total > max_hand:
-                        obj['resources'].remove_material(random.randint(0, 4), 1)
+                        obj['resources'].update_material(random.randint(0, 4), -1)
                         total = obj['resources'].get_total()
 
             on_moving_thief = self.agent_manager.players[player_id]['player'].on_moving_thief()
