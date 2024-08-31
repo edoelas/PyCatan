@@ -34,6 +34,31 @@ To visualize game results:
 
 <img src="assets/visualizer_screenshot.png" width="900" alt="Screenshot of the visualizer">
 
+## Sistema de coordenadas
+
+Se basa en el sistema de coordenadas axiales descrito en el blog de red blob games: https://www.redblobgames.com/grids/hexagons/
+
+En el siguiente enlace se pueden ver los sistemas de coordenadas para cada uno de los elementos del grid (Tile, Vertex, Edge) y las relaciones entre estos: https://www.redblobgames.com/grids/parts/#hexagon-relationships
+
+Asi pues se propone crear una clase que permita recorrer cualquiera de los elementos del tablero, saltando de unos a otros etc. Ademas debera de comprobar los limites del mapa y permitir asignar un diccionario con atributos a cada elemento (si un vertex tiene un pueblo o ciudad, que probabilidad y recurso tiene un tile etc.)
+
+Se entiende un tile como un par de coordenadas (q, r)
+
+Se entiende un edge como un par de tiles ((q1,r1),(q2,r2)) que cumple restricciones de adyacencia (todo). Para movernos de un edge a otro adyacente lo que hacemos es sustituir uno de los tiles por otro que cumpla adyacencia con los dos originales.
+
+Se entiende un vertex como una tripleta de tiles que cumplen restricciones de adyacencia todos con todos. Para movernos de un vertex a otro lo que hacemos es sustituir un tile por otro que cumpla adyacencia con los otros dos. 
+
+Definimos adyacencia del tile (q,r) como cualquiera de las siguientes opciones:
+    (1,0) => (q+1, r)
+    (-1, +1) => (q-1, r+1)
+    (0, +1) => (q, r+1)
+    (0, -1) => (q, r-1)
+    (+1, -1) => (q+1, r-1)
+    (-1, 0) => (q-1, 0)
+
+O dicho de otro modo, considerará adyacente cualquier tupla (iq,ir) tal qu: iq,ir in [-1,0,1] & iq!=ir
+
+Esto permite calcular la distancia entre dos elementos del mismo tipo como el número de incrementos que hay que hacer en cualquiera de sus tiles para llegar desde A hasta B.
 
 ## Contributing
 
