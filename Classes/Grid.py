@@ -37,11 +37,22 @@ class Grid:
         """
         res = ""
         for q in range(-self.radius, self.radius + 1):
-            res += " " * 4 * (self.radius + abs(q))
-            for r in range(max(-self.radius, -q - self.radius), min(self.radius, -q + self.radius) + 1):
+            line_start = "\n" + " " * 3 * (self.radius + abs(q))
+            hrange = range(max(-self.radius, -q - self.radius), min(self.radius, -q + self.radius) + 1)
+            
+            res += line_start
+            for r in hrange:
+                res += f"┌     ┐"
+
+            res += line_start
+            for r in hrange:
                 # este lio es para que todos los números de una unidad siempre tengan la misma longitud
                 q_string = f" {q}" if q >= 0 else f"{q}"
                 r_string = f" {r}" if r >= 0 else f"{r}"
-                res += f"〔{q_string},{r_string}〕"
-            res += "\n"
+                res += f"│{q_string},{r_string}│"
+
+            res += line_start
+            for r in hrange:
+                res += f"└     ┘"
+
         return res
