@@ -3,6 +3,11 @@ from typing import NamedTuple
 class Tile(NamedTuple):
     """
     Representación de un tile usando coordenadas axiales: q + r + s = 0 -> s = -q - r
+
+    Tres formas de definir adyacencia dado diff = a - b:
+    # (abs(diff.q) + abs(diff.r) + abs(diff.q + diff.r)) == 2
+    # diff in [Tile(1, 0), Tile(0, 1), Tile(-1, 1), Tile(-1, 0), Tile(0, -1), Tile(1, -1)]
+    # diff.q in (-1, 0, 1) and diff.r in (-1, 0, 1) and diff.q != diff.r
     """
     q: int
     r: int
@@ -10,11 +15,27 @@ class Tile(NamedTuple):
     def __sub__(self, other):
         return Tile(self.q - other.q, self.r - other.r)
 
-def adjacent_tile(a: Tile, b: Tile) -> bool:
-    diff = a - b
-    # alternativa: return (abs(diff.q) + abs(diff.r) + abs(diff.q + diff.r)) == 2
-    # otra: return diff in [Tile(1, 0), Tile(0, 1), Tile(-1, 1), Tile(-1, 0), Tile(0, -1), Tile(1, -1)]
-    return diff.q in (-1, 0, 1) and diff.r in (-1, 0, 1) and diff.q != diff.r
+    def __add__(self, other):
+        return Tile(self.q + other.q, self.r + other.r)
+
+    def adjacent_tiles(self):
+        return [self + d for d in [Tile(1, 0), Tile(0, 1), Tile(-1, 1), Tile(-1, 0), Tile(0, -1), Tile(1, -1)]]
+
+    def is_adjacent(self, other):
+        diff = self - other
+        return (abs(diff.q) + abs(diff.r) + abs(diff.q + diff.r)) == 2
+
+    def move(self, direction):
+        if isinstance(direction, str):
+            direction = {
+                "r": Tile(0, 1),
+                "br": Tile(1, 0),
+                "bl": Tile(1, -1),
+                "l": Tile(0, -1),
+                "tl": Tile(-1, 0),
+                "tl": Tile(-1, 1)
+            }[direction]
+        return self + direction
 
 
 class Grid:
@@ -29,7 +50,7 @@ class Grid:
             for r in range(max(-self.radius, -q - self.radius), min(self.radius, -q + self.radius) + 1):
                 self.tiles.append(Tile(q, r))
 
-    def is_in(self, tile: Tile) -> bool:
+    def is_inside(self, tile: Tile) -> bool:
         return tile in self.tiles
 
     def __str__(self):
