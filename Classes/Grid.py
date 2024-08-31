@@ -23,6 +23,7 @@ class Grid:
     """
     def __init__(self, radius):
         self.radius = radius
+        self.marks = [] # utilizado para debuggear principalmente
         self.tiles = []
         for q in range(-self.radius, self.radius + 1):
             for r in range(max(-self.radius, -q - self.radius), min(self.radius, -q + self.radius) + 1):
@@ -35,6 +36,7 @@ class Grid:
         """
         Devuelve una representación grafica en ascii del grid
         """
+        # TODO: esto es muy mejorable. Lo de tener 3 fors es un poco feo
         res = ""
         for q in range(-self.radius, self.radius + 1):
             line_start = "\n" + " " * 3 * (self.radius + abs(q))
@@ -42,17 +44,18 @@ class Grid:
             
             res += line_start
             for r in hrange:
-                res += f"┌     ┐"
+                res += f"╔     ╗" if Tile(q, r) in self.marks else f"┌     ┐"
 
             res += line_start
             for r in hrange:
                 # este lio es para que todos los números de una unidad siempre tengan la misma longitud
                 q_string = f" {q}" if q >= 0 else f"{q}"
                 r_string = f" {r}" if r >= 0 else f"{r}"
-                res += f"│{q_string},{r_string}│"
+                # res += f"│{q_string},{r_string}│" 
+                res += f"║{q_string},{r_string}║" if Tile(q, r) in self.marks else f"│{q_string},{r_string}│"
 
             res += line_start
             for r in hrange:
-                res += f"└     ┘"
+                res += f"╚     ╝" if Tile(q, r) in self.marks else f"└     ┘"
 
         return res
