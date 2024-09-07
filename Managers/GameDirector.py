@@ -8,9 +8,10 @@ class GameDirector:
     Clase que se encarga de dirigir la partida, empezarla y acabarla
     """
 
-    def __init__(self, for_test=False, agents = None, max_rounds=1000):
+    def __init__(self, for_test=False, agents = None, max_rounds=1000, output_traces=True):
+        self.output_traces = output_traces
         self.game_manager = GameManager(for_test, agents)
-        self.trace_loader = TraceLoader()
+        self.trace_loader = TraceLoader(output_traces)
         self.max_rounds = max_rounds
         return
 
@@ -262,5 +263,7 @@ class GameDirector:
                     str(self.game_manager.get_players()[i]['longest_road']) + ')')
 
         self.trace_loader.current_trace["game"] = game_object
-        self.trace_loader.export_to_file(game_number)
+        
+        if self.output_traces:   
+            self.trace_loader.export_to_file(game_number)
         return

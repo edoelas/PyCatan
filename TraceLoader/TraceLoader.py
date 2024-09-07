@@ -9,13 +9,15 @@ class TraceLoader:
     current_trace = {}
     full_path = ''
 
-    def __init__(self):
+    def __init__(self, output_traces=True):
         # Cogemos el día y hora para ponerle el nombre a la carpeta a crear en trazas
         # Creamos la carpeta del día y hora de hoy para guardar todas las trazas ahí
         # Si no existe la carpeta "Traces" la crea
-        today = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
-        self.full_path = Path(__file__).parent / "Traces" / today
-        self.full_path.mkdir(parents=True)
+        self.output_traces = output_traces
+        if output_traces:
+            today = datetime.today().strftime('%Y-%m-%d_%H-%M-%S')
+            self.full_path = Path(__file__).parent / "Traces" / today
+            self.full_path.mkdir(parents=True)
         return
 
     def export_to_file(self, game_number):
@@ -23,6 +25,8 @@ class TraceLoader:
         Función que exporta a formato JSON la variable current_trace
         :return: None
         """
+        if self.output_traces is False:
+            return
 
         json_obj = json.dumps(self.current_trace)
         file_path = self.full_path / ("game_" + str(game_number) + '.json')
@@ -38,6 +42,8 @@ class TraceLoader:
         Función que exporta a formato JSON la variable all_games_trace
         :return: None
         """
+        if self.output_traces is False:
+            return
         json_obj = json.dumps(self.all_games_trace)
         file_path = self.full_path / "games.json"
         with open(file_path, 'w') as outfile:
